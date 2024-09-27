@@ -4,7 +4,7 @@ import { getTasksFromRedis } from "../services/redis";
 
 export const taskRoutes = express.Router();
 
-// GET /fetchAllTasks - Fetch all tasks from Redis or MongoDB
+
 taskRoutes.get("/fetchAllTasks", async (req, res) => {
   // Try fetching from Redis first
   const redisTasks = await getTasksFromRedis();

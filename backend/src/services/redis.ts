@@ -14,14 +14,14 @@ export const connectRedis = async () => {
 };
 
 export const getTasksFromRedis = async (): Promise<string[]> => {
-  const tasks = await redisClient.get(`FULLSTACK_TASK_RIYAZ_AHMAD`);
+  const tasks = await redisClient.get(`FULLSTACK_TASK_RIYAZ`);
   return tasks ? JSON.parse(tasks) : [];
 };
 
 export const saveTasksToRedis = async (tasks: string[]) => {
-  await redisClient.set(`FULLSTACK_TASK_RIYAZ_AHMAD`, JSON.stringify(tasks));
+  await redisClient.set(`FULLSTACK_TASK_RIYAZ`, JSON.stringify(tasks));
 };
 
 export const clearTasksFromRedis = async () => {
-  await redisClient.del(`FULLSTACK_TASK_RIYAZ_AHMAD`);
+  await redisClient.del(`FULLSTACK_TASK_RIYAZ`);
 };

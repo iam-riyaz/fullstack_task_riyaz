@@ -1,7 +1,6 @@
 import express from 'express';
 import dotenv from "dotenv"
 import cors from "cors"
-import redis from 'redis';
 import { createServer } from 'http'
 import { Server } from 'socket.io';
 import { connectDB } from '../config/database/database.config';
@@ -40,15 +39,13 @@ io.on('connection', (socket) => {
       let tasks = await getTasksFromRedis();
       tasks.push(task);
       await saveTasksToRedis(tasks);
-
+      
   
-      // If more than 50 tasks, move to MongoDB and clear Redis
-      if (tasks.length ==5) {
+      if (tasks.length ==50) {
         await Task.insertMany(tasks.map(t => ({ task: t })));
         await clearTasksFromRedis();
       }
 
-       // Emit the updated task list to all connected clients
        io.emit('tasksUpdated', tasks);
     });
   });

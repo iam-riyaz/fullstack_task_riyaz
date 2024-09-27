@@ -1,8 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { io, Socket } from 'socket.io-client';
 
-// WebSocket server URL (adjust this to match your backend server's URL)
 const SOCKET_SERVER_URL = 'http://localhost:3000';
 
 
@@ -15,15 +15,14 @@ export const Todo: React.FC = () => {
     try {
       const response = await axios.get(`http://localhost:3000/fetchAllTasks`);
 
-      setTasks(response?.data?.redisTasks?.map((task: any) => (typeof task === 'string' ? task : task.task))); // Handle Redis or MongoDB task structure
+      setTasks(response?.data?.redisTasks?.map((task: any) => (typeof task === 'string' ? task : task.task)));
     } catch (error) {
       console.error('Error fetching tasks:', error);
     }
   };
 
-  // Set up WebSocket connection
   useEffect(() => {
-    const socketConnection = io(SOCKET_SERVER_URL);  // Establish WebSocket connection
+    const socketConnection = io(SOCKET_SERVER_URL); 
     setSocket(socketConnection);
 
     return () => {
@@ -35,7 +34,6 @@ export const Todo: React.FC = () => {
     fetchTasks();
   }, []);
 
-  // Listen for WebSocket 'tasksUpdated' event to update tasks in real time
   useEffect(() => {
     if (socket) {
       socket.on('tasksUpdated', (updatedTasks: string[]) => {
@@ -49,38 +47,56 @@ export const Todo: React.FC = () => {
   }, [socket]);
 
 
-  // Handle adding a new task
   const handleAddTask = () => {
     if (socket && newTask) {
-      socket.emit('add', newTask);  // Emit 'add' event with the new task
-      setNewTask('');  // Clear input field after adding task
-      // fetchTasks();
+      socket.emit('add', newTask);  
+      setNewTask('');  
+      toast.success("Task added successfully")
+      
     }
   };
 
-
-
+  const handleKeyPress=(event:React.KeyboardEvent<HTMLInputElement>)=>{
+              
+    if (event.key === 'Enter') {
+      console.log('Enter key pressed');
+      handleAddTask();
+    }
+  }
 
 
   return (
+    <div className='w-[300px] md:w-[400px] border shadow-xl rounded-md min-h-[100px] p-5'>
     <div>
-      <h2>To-Do List</h2>
+      <div className='h-10 flex items-center gap-3  pb-3'>
+        <img className='h-full' src="https://cdn-icons-png.flaticon.com/512/9809/9809689.png" alt="" />
+        <span className='text-2xl font-bold'>Note App</span>
+        </div>
 
-      {/* Input to add a new task */}
+      <div className='flex items-center justify-between'>
+
       <input
+      className='border border-gray-300 h-8 w-9/12 drop-shadow-md rounded-md outline-none px-2'
         type="text"
-        placeholder="New Task"
+        placeholder="New Note..."
         value={newTask}
         onChange={(e) => setNewTask(e.target.value)}
+        onKeyDown={handleKeyPress}
       />
-      <button onClick={handleAddTask}>Add Task</button>
+      <button className='border h-8 px-1 md:px-3 rounded-md -xl bg-[#92400E] hover:bg-[#6a3819] text-white font-black' onClick={handleAddTask}> <span>+</span> <span>Add</span></button>
 
-      <h2>Task List</h2>
-      <ul>
+      </div>
+      <div className='mt-5'>
+      <p className='font-bold border-b pb-3'>Task</p>
+      <div className='h-72 overflow-auto'>
+      <ul className=''>
         {tasks.map((task, index) => (
-          <li key={index}>{task}</li>
+          <p className='font-semibold break-all border-b py-2 w-full text-wrap' key={index}>{task}</p>
         ))}
       </ul>
+      </div>
+      </div>
+    </div>
     </div>
   );
 };
