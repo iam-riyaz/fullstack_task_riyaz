@@ -91,7 +91,7 @@ export const Todo: React.FC = () => {
       <div className='h-72 overflow-auto'>
       <ul className=''>
         {tasks.map((task, index) => (
-          <p className='font-semibold break-all border-b py-2 w-full text-wrap' key={index}> <span className='text-gray-400'>{index+1}.</span>  {task}</p>
+          <p className='font-semibold break-words border-b py-2 w-full text-wrap' key={index}> <span className='text-gray-400'>{index+1}.</span>  {task}</p>
         ))}
       </ul>
       </div>
