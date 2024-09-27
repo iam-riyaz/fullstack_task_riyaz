@@ -1,10 +1,10 @@
 import { Task } from "./../models/model";
-import express from "express";
+import express, { Request, Response } from "express";
 import { getTasksFromRedis } from "../services/redis";
 
 export const taskRoutes = express.Router();
 
-taskRoutes.get("/fetchAllTasks", async (req, res) => {
+taskRoutes.get("/fetchAllTasks", async (req:Request, res:Response) => {
   try {
     const mongoTasks = await Task.find();
     res.status(200).send({

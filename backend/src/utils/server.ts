@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from "dotenv"
 import cors from "cors"
 import { createServer } from 'http'
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { connectDB } from '../config/database/database.config';
 import { clearTasksFromRedis, connectRedis, getTasksFromRedis, saveTasksToRedis } from '../services/redis';
 import { Task } from '../models/model';
@@ -33,7 +33,7 @@ connectDB().then(()=>{
     });
 })
 
-io.on('connection', (socket) => {
+io.on('connection', (socket:Socket) => {
     console.log("user connected:", socket.id);
     socket.on('add', async (task: string) => {
       let tasks = await getTasksFromRedis();
